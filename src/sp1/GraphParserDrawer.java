@@ -27,9 +27,11 @@ import edu.uci.ics.jung.visualization.VisualizationImageServer;
  * @version September 8th, 2017
  *
  */
+
+
 public class GraphParserDrawer {
 	
-	public void createVertexMap () throws IOException {
+	public HashMap<Integer, String> createVertexMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("label");
 			HashMap<Integer, String> idMapper = new HashMap<Integer, String>();
@@ -48,10 +50,12 @@ public class GraphParserDrawer {
 				System.out.println(pair.getKey() + " " + pair.getValue());
 			}
 			
-		};
+			return idMapper;
+			
+		}
 	}
 	
-	public void createEdgeMap () throws IOException {
+	public HashMap<Integer, ArrayList<Integer>> createEdgeMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("source");
 			
@@ -75,6 +79,7 @@ public class GraphParserDrawer {
 				myDelim.next();
 			}
 			System.out.println(edgeMapper);
+			return edgeMapper;
 		}
 	}
 
@@ -86,27 +91,45 @@ public class GraphParserDrawer {
 		//myData.createVertexMap();
 		//myData.createEdgeMap();
 		Graph<String, String> g = new SparseGraph<String,String>();
+		ArrayList<Integer> keySet = new ArrayList<Integer>();
+		keySet.addAll(myData.createEdgeMap().keySet());
+		
+		System.out.println(keySet);
 
-		g.addVertex("000");
-		g.addVertex("001");
-		g.addVertex("010");
-		g.addVertex("100");
-		g.addVertex("011");
-		g.addVertex("101");
-		g.addVertex("110");
-		g.addVertex("111");
-		g.addEdge("e0", new Pair<String>("000","001"));
-		g.addEdge("e1", new Pair<String>("000","010"));
-		g.addEdge("e2", new Pair<String>("000","100"));
-		g.addEdge("e3", new Pair<String>("001","011"));
-		g.addEdge("e4", new Pair<String>("001","101"));
-		g.addEdge("e5", new Pair<String>("010","011"));
-		g.addEdge("e6", new Pair<String>("010","110"));
-		g.addEdge("e7", new Pair<String>("100","101"));
-		g.addEdge("e8", new Pair<String>("100","110"));
-		g.addEdge("e9", new Pair<String>("011","111"));
-		g.addEdge("e10", new Pair<String>("101","111"));
-		g.addEdge("e11", new Pair<String>("110","111"));
+//		g.addVertex("000");
+//		g.addVertex("001");
+//		g.addVertex("010");
+//		g.addVertex("100");
+//		g.addVertex("011");
+//		g.addVertex("101");
+//		g.addVertex("110");
+//		g.addVertex("111");
+		
+//		for (int i = 0; i <= myData.createVertexMap().size(); i++) {
+//			g.addVertex(myData.createVertexMap().get(i).toString());
+//		}
+//		
+		for (int i = 0; i <= myData.createEdgeMap().size(); i++) {
+			
+			for (int j = 0; j <= myData.createEdgeMap().get(i).size(); j++) {
+				g.addEdge("e" + "{i}", 
+						new Pair<String>(keySet.get(i).toString(), 
+										myData.createEdgeMap().get(keySet.get(i)).get(j).toString()));
+			}
+		}
+		
+//		g.addEdge("e0", new Pair<String>("000","001"));
+//		g.addEdge("e1", new Pair<String>("000","010"));
+//		g.addEdge("e2", new Pair<String>("000","100"));
+//		g.addEdge("e3", new Pair<String>("001","011"));
+//		g.addEdge("e4", new Pair<String>("001","101"));
+//		g.addEdge("e5", new Pair<String>("010","011"));
+//		g.addEdge("e6", new Pair<String>("010","110"));
+//		g.addEdge("e7", new Pair<String>("100","101"));
+//		g.addEdge("e8", new Pair<String>("100","110"));
+//		g.addEdge("e9", new Pair<String>("011","111"));
+//		g.addEdge("e10", new Pair<String>("101","111"));
+//		g.addEdge("e11", new Pair<String>("110","111"));
 
 		//System.out.println(g);
 
