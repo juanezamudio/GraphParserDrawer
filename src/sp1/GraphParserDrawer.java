@@ -31,6 +31,11 @@ import edu.uci.ics.jung.visualization.VisualizationImageServer;
 
 public class GraphParserDrawer {
 	
+	/**
+	 * Iterates over a HashMap and prints it out
+	 * @param hmap - given HashMap
+	 */
+	
 	public void mapIterator(HashMap<Integer,String> hmap) {
 		Iterator<Map.Entry<Integer, String>> it = hmap.entrySet().iterator();
 		
@@ -40,6 +45,11 @@ public class GraphParserDrawer {
 		}
 	}
 	
+	/**
+	 * Creates a HashMap of vertices
+	 * @return - The HashMap of vertices
+	 * @throws IOException
+	 */
 	public HashMap<Integer, String> createVertexMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("label");
@@ -56,6 +66,11 @@ public class GraphParserDrawer {
 		}
 	}
 	
+	/**
+	 * Creates a HashMap of edges
+	 * @return - The HashMap of edges
+	 * @throws IOException
+	 */
 	public HashMap<Integer, ArrayList<Integer>> createEdgeMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("source");
@@ -82,34 +97,29 @@ public class GraphParserDrawer {
 		}
 	}
 
-	/**
-	 * @param args
-	 */
+	
 	public static void main(String[] args) throws IOException {
+		// Creates an instance of the class and a new SparseGraph
 		GraphParserDrawer myData = new GraphParserDrawer();
 		Graph<String, String> g = new SparseGraph<String,String>();
 		
+		// Instantiates an ArrayList of all the keys in the edge and vertex maps
 		ArrayList<Integer> edgeKeySet = new ArrayList<Integer>();
 		edgeKeySet.addAll(myData.createEdgeMap().keySet());
 		
 		ArrayList<Integer> vertexKeySet = new ArrayList<Integer>();
 		vertexKeySet.addAll(myData.createVertexMap().keySet());
 		
+		// Instance of createEdgeMap() method for clarity
 		HashMap<Integer, ArrayList<Integer>> edgeMap = myData.createEdgeMap();
 
-//		g.addVertex("000");
-//		g.addVertex("001");
-//		g.addVertex("010");
-//		g.addVertex("100");
-//		g.addVertex("011");
-//		g.addVertex("101");
-//		g.addVertex("110");
-//		g.addVertex("111");
 		
+		// For loop that add the vertices to the graph
 		for (int i = 0; i <= myData.createVertexMap().size() - 1; i++) {
 			g.addVertex(vertexKeySet.get(i).toString());
 		}
 		
+		// For loop that adds the edges to the graph
 		for (int i = 0, k = 0; i <= edgeMap.size() - 1; i++) {
 			for (int j = 0; j <= edgeMap.get(edgeKeySet.get(i)).size() - 1; j++) {
 				g.addEdge("e" + Integer.toString(k), 
@@ -118,19 +128,6 @@ public class GraphParserDrawer {
 				k++;
 			}
 		}
-		
-//		g.addEdge("e0", new Pair<String>("000","001"));
-//		g.addEdge("e1", new Pair<String>("000","010"));
-//		g.addEdge("e2", new Pair<String>("000","100"));
-//		g.addEdge("e3", new Pair<String>("001","011"));
-//		g.addEdge("e4", new Pair<String>("001","101"));
-//		g.addEdge("e5", new Pair<String>("010","011"));
-//		g.addEdge("e6", new Pair<String>("010","110"));
-//		g.addEdge("e7", new Pair<String>("100","101"));
-//		g.addEdge("e8", new Pair<String>("100","110"));
-//		g.addEdge("e9", new Pair<String>("011","111"));
-//		g.addEdge("e10", new Pair<String>("101","111"));
-//		g.addEdge("e11", new Pair<String>("110","111"));
 
 		System.out.println(g);
 
@@ -138,12 +135,16 @@ public class GraphParserDrawer {
 		FRLayout<String,String> l = new FRLayout<String,String>(g);
 		Dimension dim = new Dimension(1000,1000);
 		
+		// Set the repulsion and attraction multiplier for FRLayout
+		l.setAttractionMultiplier(0.1);
+		l.setRepulsionMultiplier(0.6);
+		
 		VisualizationImageServer<String,String> vis = new VisualizationImageServer<String,String>(l, dim);
 
 		BufferedImage im = (BufferedImage) vis.getImage(
 				new Point2D.Double(dim.getWidth()/2, dim.getHeight()/2),
 				dim);
-		ImageIO.write((RenderedImage) im, "jpg", new File("dolphin_2.jpg"));
+		ImageIO.write((RenderedImage) im, "jpg", new File("dolphin.jpg"));
 	}
 
 }
