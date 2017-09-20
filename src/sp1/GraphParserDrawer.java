@@ -31,6 +31,15 @@ import edu.uci.ics.jung.visualization.VisualizationImageServer;
 
 public class GraphParserDrawer {
 	
+	public void mapIterator(HashMap<Integer,String> hmap) {
+		Iterator<Map.Entry<Integer, String>> it = hmap.entrySet().iterator();
+		
+		while (it.hasNext()) {
+			Map.Entry<Integer, String> pair = it.next();
+			System.out.println(pair.getKey() + " " + pair.getValue());
+		}
+	}
+	
 	public HashMap<Integer, String> createVertexMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("label");
@@ -40,25 +49,16 @@ public class GraphParserDrawer {
 			
 			for (int i = 0; i <= 61 && myDelim.hasNext(); i++) {
 				idMapper.put(i, myDelim.findInLine("\\\"\\w*\\\""));
-//				System.out.println(idMapper.get(i));
 				myDelim.next();
 			}
 			
-//			Iterator<Map.Entry<Integer, String>> it = idMapper.entrySet().iterator();
-//			while (it.hasNext()) {
-//				Map.Entry<Integer, String> pair = it.next();
-//				System.out.println(pair.getKey() + " " + pair.getValue());
-//			}
-			
 			return idMapper;
-			
 		}
 	}
 	
 	public HashMap<Integer, ArrayList<Integer>> createEdgeMap () throws IOException {
 		try (Scanner scanner = new Scanner(new File ("dolphins.txt"))){
 			Scanner myDelim = scanner.useDelimiter("source");
-			
 			HashMap<Integer, ArrayList<Integer>> edgeMapper = new HashMap<Integer, ArrayList<Integer>>();
 			
 			myDelim.next();
@@ -87,7 +87,6 @@ public class GraphParserDrawer {
 	 */
 	public static void main(String[] args) throws IOException {
 		GraphParserDrawer myData = new GraphParserDrawer();
-		
 		Graph<String, String> g = new SparseGraph<String,String>();
 		
 		ArrayList<Integer> edgeKeySet = new ArrayList<Integer>();
@@ -95,30 +94,30 @@ public class GraphParserDrawer {
 		
 		ArrayList<Integer> vertexKeySet = new ArrayList<Integer>();
 		vertexKeySet.addAll(myData.createVertexMap().keySet());
+		
+		HashMap<Integer, ArrayList<Integer>> edgeMap = myData.createEdgeMap();
 
-		g.addVertex("000");
-		g.addVertex("001");
-		g.addVertex("010");
-		g.addVertex("100");
-		g.addVertex("011");
-		g.addVertex("101");
-		g.addVertex("110");
-		g.addVertex("111");
+//		g.addVertex("000");
+//		g.addVertex("001");
+//		g.addVertex("010");
+//		g.addVertex("100");
+//		g.addVertex("011");
+//		g.addVertex("101");
+//		g.addVertex("110");
+//		g.addVertex("111");
 		
-//		for (int i = 0; i <= myData.createVertexMap().size() - 1; i++) {
-//			g.addVertex(vertexKeySet.get(i).toString());
-//			System.out.println(vertexKeySet.get(i).toString());
-//		}
+		for (int i = 0; i <= myData.createVertexMap().size() - 1; i++) {
+			g.addVertex(vertexKeySet.get(i).toString());
+		}
 		
-//		for (int i = 0, k = 0; i <= myData.createEdgeMap().size() - 1; i++, k++) {
-//			
-//			for (int j = 0; j <= myData.createEdgeMap().get(edgeKeySet.get(i)).size() - 1; j++) {
-//				g.addEdge("e" + Integer.toString(k), 
-//						new Pair<String>(edgeKeySet.get(i).toString(), 
-//										myData.createEdgeMap().get(edgeKeySet.get(i)).get(j).toString()));
-//				k++;
-//			}
-//		}
+		for (int i = 0, k = 0; i <= edgeMap.size() - 1; i++) {
+			for (int j = 0; j <= edgeMap.get(edgeKeySet.get(i)).size() - 1; j++) {
+				g.addEdge("e" + Integer.toString(k), 
+						new Pair<String>(edgeKeySet.get(i).toString(), 
+										edgeMap.get(edgeKeySet.get(i)).get(j).toString()));
+				k++;
+			}
+		}
 		
 //		g.addEdge("e0", new Pair<String>("000","001"));
 //		g.addEdge("e1", new Pair<String>("000","010"));
@@ -136,14 +135,15 @@ public class GraphParserDrawer {
 		System.out.println(g);
 
 
-//		Layout<String,String> l = new FRLayout<String,String>(g);
-//		Dimension dim = new Dimension(750,750);
-//		VisualizationImageServer<String,String> vis = new VisualizationImageServer<String,String>(l, dim);
-//
-//		BufferedImage im = (BufferedImage) vis.getImage(
-//				new Point2D.Double(dim.getWidth()/2, dim.getHeight()/2),
-//				dim);
-//		ImageIO.write((RenderedImage) im, "jpg", new File("out.jpg"));
+		FRLayout<String,String> l = new FRLayout<String,String>(g);
+		Dimension dim = new Dimension(1000,1000);
+		
+		VisualizationImageServer<String,String> vis = new VisualizationImageServer<String,String>(l, dim);
+
+		BufferedImage im = (BufferedImage) vis.getImage(
+				new Point2D.Double(dim.getWidth()/2, dim.getHeight()/2),
+				dim);
+		ImageIO.write((RenderedImage) im, "jpg", new File("dolphin_2.jpg"));
 	}
 
 }
