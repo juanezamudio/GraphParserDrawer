@@ -3,9 +3,8 @@
  */
 package sp1;
 
-import java.io.*;
+
 import java.util.*;
-import java.util.regex.Pattern;
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.awt.image.BufferedImage;
@@ -16,7 +15,6 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 
 import edu.uci.ics.jung.algorithms.layout.FRLayout;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.SparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Pair;
